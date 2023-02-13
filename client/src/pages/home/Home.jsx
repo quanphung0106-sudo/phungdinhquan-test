@@ -1,12 +1,4 @@
-import {
-  Button,
-  Chip,
-  IconButton,
-  ListItem,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 const Home = () => {
   const [data, setData] = useState();
@@ -79,39 +72,28 @@ const Home = () => {
       field: 'status',
       headerName: 'Trang thai',
       flex: 1,
-      renderCell: (params) => {
-        <Tooltip title={params.value}>
-          <Typography
-            sx={{
-              whiteSpace: ' nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            fontSize="14px"
-          >
-            {handleStatus(params.value)}
-          </Typography>
-        </Tooltip>;
-      },
+      renderCell: (params) => handleStatus(params.value),
     },
     {
       field: 'ngayGioBD',
       headerName: 'Ngay gio Bat Dau',
-      minWidth: 180,
+      minWidth: 200,
       flex: 1,
       renderCell: (params) => {
-        <Tooltip title={params.value}>
-          <Typography
-            sx={{
-              whiteSpace: ' nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            fontSize="14px"
-          >
-            {handleStatus(params.value)}
-          </Typography>
-        </Tooltip>;
+        return (
+          <Tooltip title={params.value}>
+            <Typography
+              sx={{
+                whiteSpace: ' nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              fontSize="14px"
+            >
+              {moment(params.value).format('lll')}
+            </Typography>
+          </Tooltip>
+        );
       },
     },
     {
@@ -121,18 +103,20 @@ const Home = () => {
 
       flex: 1,
       renderCell: (params) => {
-        <Tooltip title={params.value}>
-          <Typography
-            sx={{
-              whiteSpace: ' nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            fontSize="14px"
-          >
-            {handleStatus(params.value)}
-          </Typography>
-        </Tooltip>;
+        return (
+          <Tooltip title={params.value}>
+            <Typography
+              sx={{
+                whiteSpace: ' nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              fontSize="14px"
+            >
+              {moment(params.value).format('lll')}
+            </Typography>
+          </Tooltip>
+        );
       },
     },
     {
@@ -146,12 +130,16 @@ const Home = () => {
       renderCell: (params) => {
         if (params.row !== undefined) {
           const data = params.row.idHD;
+          const status = params.row.status;
           return (
             <Stack direction="row" alignItems="center">
               <IconButton onClick={() => navigate(`/edit/${data}`)}>
                 <EditIcon />
               </IconButton>
-              <IconButton onClick={() => handleDelete(params.row.idHD)}>
+              <IconButton
+                onClick={() => handleDelete(params.row.idHD)}
+                disabled={status === 3}
+              >
                 <DeleteIcon />
               </IconButton>
             </Stack>
@@ -162,7 +150,7 @@ const Home = () => {
   ];
 
   const handleStatus = (status) => {
-    if (status === 0) return 'Đangmờiđăng ký';
+    if (status === 0) return 'Đang mời đăng ký';
     if (status === 1) return 'Đã hết hạn đăng ký';
     if (status === 2) return 'Trưởng đoàn tự huỷ';
     return ' Đã kết thúc';

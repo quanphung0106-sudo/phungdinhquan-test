@@ -21,6 +21,14 @@ const ThamGiaSchema = new Schema(
     nhanXetKhac: {
       type: String,
     },
+    // maTV: {
+    //   type: mongoose.SchemaType.ObjectId,
+    //   ref: "ThanhVien",
+    // },
+    // maTV: {
+    //   type: mongoose.SchemaType.ObjectId,
+    //   ref: "ThanhVien",
+    // },
   },
   {
     timestamps: true,

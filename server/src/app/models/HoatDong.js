@@ -35,6 +35,10 @@ const HoatDongSchema = new Schema(
     lyDoHuyHD: {
       type: String,
     },
+    // maTV: {
+    //   type: mongoose.SchemaType.ObjectId,
+    //   ref: "ThanhVien",
+    // },
   },
   {
     timestamps: true,

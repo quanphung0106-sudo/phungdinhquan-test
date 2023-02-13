@@ -127,6 +127,7 @@ const Form = () => {
             id="demo-simple-select"
             onChange={params.id && handleChange}
             name="trangThai"
+            value={!params.id ? 0 : form.status}
             disabled={!params.id}
           >
             <MenuItem value={0}>0</MenuItem>

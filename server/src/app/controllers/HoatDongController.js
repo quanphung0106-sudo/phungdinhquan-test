@@ -1,4 +1,5 @@
 const HoatDong = require("../models/HoatDong");
+const ThanhVien = require("../models/ThanhVien");
 
 //[POST]: /api/hoat-dong
 const createNewHoatDong = async (req, res) => {
@@ -64,10 +65,47 @@ const deleteHoatDong = async (req, res) => {
   }
 };
 
+const thongKeDiemTrungBinh = async () => {
+  const results = await ThanhVien.aggregate([
+    {
+      $addFields: { _id: { $toString: "$_id" } },
+    },
+    {
+      $lookup: {
+        from: ThamGia.collection.name,
+        localField: "_id",
+        foreignField: "_id",
+        as: "danhSachDiem",
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [{ $arrayElemAt: ["$danhSachDiem", 0] }, "$$ROOT"],
+        },
+      },
+    },
+    {
+      $project: {
+        MaTV: 1,
+        HoTen: 1,
+        DiemDanhGiaTrungBinh: { $avg: "$danhSachDiem" },
+      },
+    },
+    {
+      $sort: {
+        DiemTruongDoan: -1,
+      },
+    },
+  ]);
+  return results;
+};
+
 module.exports = {
   createNewHoatDong,
   getAllHoatDong,
   updateHoatDong,
   getHoatDong,
   deleteHoatDong,
+  thongKeDiemTrungBinh,
 };
