@@ -4,6 +4,7 @@ const HoatDongController = require("../app/controllers/HoatDongController");
 
 router.post("/", HoatDongController.createNewHoatDong);
 router.get("/", HoatDongController.getAllHoatDong);
+router.get("/:id", HoatDongController.getHoatDong);
 router.put("/:id", HoatDongController.updateHoatDong);
 
 module.exports = router;

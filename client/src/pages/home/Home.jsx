@@ -13,9 +13,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [data, setData] = useState();
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -143,10 +145,10 @@ const Home = () => {
       flex: 1,
       renderCell: (params) => {
         if (params.row !== undefined) {
-          const data = params.row.idItem;
+          const data = params.row.idHD;
           return (
             <Stack direction="row" alignItems="center">
-              <IconButton onClick={() => handleClickOpen(data)}>
+              <IconButton onClick={() => navigate(`/edit/${data}`)}>
                 <EditIcon />
               </IconButton>
               <IconButton>
@@ -180,7 +182,9 @@ const Home = () => {
     };
   });
 
-  const handleClickOpen = () => {};
+  const handleClickOpen = (data) => {
+    console.log(data);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -206,6 +210,13 @@ const Home = () => {
         <Typography variant="h1" fontSize="36px">
           Danh sách hoạt động
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => navigate('/create')}
+          sx={{ maxWidth: '200px' }}
+        >
+          Tao moi hoat dong
+        </Button>
         <DataGrid
           columns={columns ? columns : []}
           rows={hoatDongList !== undefined ? hoatDongList : []}
