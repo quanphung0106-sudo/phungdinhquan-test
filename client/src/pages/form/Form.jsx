@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   MenuItem,
   Select,
   Stack,
@@ -13,7 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const Form = () => {
   const params = useParams();
   const [data, setData] = useState();
-  const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     tenHD: '',
     moTaHD: '',
@@ -33,7 +34,10 @@ const Form = () => {
           const res = await axios.get(
             `http://localhost:8801/api/hoat-dong/${params.id}`
           );
-          if (res.data) setData(res.data);
+          if (res.data) {
+            setData(res.data);
+            setForm(res.data);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -42,17 +46,19 @@ const Form = () => {
     getData();
   }, [params]);
 
+  console.log(form);
+
   const handleChange = (e) => {
     setForm((prev) => {
       return {
         ...prev,
         [e.target.name]: e.target.value,
-        trangThai: params.id ? e.target.value : 0,
       };
     });
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const res = params.id
         ? await axios.put(
@@ -64,6 +70,8 @@ const Form = () => {
     } catch (err) {
       console.log(err);
       return err;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,38 +81,36 @@ const Form = () => {
         {params.id ? 'Chinh sua hoat dong' : 'Tao moi hoat dong'}
       </Typography>
       <Stack gap="20px" width="60%">
-        <TextField
-          type="text"
-          onChange={handleChange}
-          name="tenHD"
-          label="Ten hoat dong"
-          variant="outlined"
-        />
-        <TextField
-          type="text"
-          onChange={handleChange}
-          name="moTaHD"
-          label="Mo ta hoat dong"
-        />
-        <TextField
-          type="number"
-          onChange={handleChange}
-          name="slToiThieuYC"
-          label="So luong toi thieu"
-        />
-        <TextField
-          type="number"
-          onChange={handleChange}
-          name="slToiDaYC"
-          label="So luong toi da"
-        />
-        {params.id && (
+        <Stack gap="10px">
+          <span>Ten hoat dong</span>
           <TextField
             type="text"
             onChange={handleChange}
-            name="lyDoHuyHD"
-            label="Ly do huy hoat dong"
+            name="tenHD"
+            variant="outlined"
           />
+        </Stack>
+        <Stack gap="10px">
+          <span>Mo ta hoat dong</span>
+          <TextField type="text" onChange={handleChange} name="moTaHD" />
+        </Stack>
+        <Stack gap="10px">
+          <span>So luong toi thieu</span>
+          <TextField
+            type="number"
+            onChange={handleChange}
+            name="slToiThieuYC"
+          />
+        </Stack>
+        <Stack gap="10px">
+          <span>So luong toi da</span>
+          <TextField type="number" onChange={handleChange} name="slToiDaYC" />
+        </Stack>
+        {params.id && (
+          <Stack gap="10px">
+            <span>Ly do huy hoat dong</span>
+            <TextField type="text" onChange={handleChange} name="lyDoHuyHD" />
+          </Stack>
         )}
         <Stack gap="10px">
           <span>Thoi gian bat dau</span>
@@ -119,7 +125,6 @@ const Form = () => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={params.id ? form?.status : 0}
             onChange={params.id && handleChange}
             name="trangThai"
             disabled={!params.id}
@@ -130,7 +135,12 @@ const Form = () => {
             <MenuItem value={3}>3</MenuItem>
           </Select>
         </Stack>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          disabled={loading}
+          endIcon={loading && <CircularProgress />}
+          onClick={handleSubmit}
+        >
           Submit
         </Button>
       </Stack>

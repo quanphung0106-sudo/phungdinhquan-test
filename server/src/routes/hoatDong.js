@@ -6,5 +6,6 @@ router.post("/", HoatDongController.createNewHoatDong);
 router.get("/", HoatDongController.getAllHoatDong);
 router.get("/:id", HoatDongController.getHoatDong);
 router.put("/:id", HoatDongController.updateHoatDong);
+router.delete("/:id", HoatDongController.deleteHoatDong);
 
 module.exports = router;

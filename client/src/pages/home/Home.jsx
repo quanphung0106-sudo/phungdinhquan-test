@@ -151,7 +151,7 @@ const Home = () => {
               <IconButton onClick={() => navigate(`/edit/${data}`)}>
                 <EditIcon />
               </IconButton>
-              <IconButton>
+              <IconButton onClick={() => handleDelete(params.row.idHD)}>
                 <DeleteIcon />
               </IconButton>
             </Stack>
@@ -182,20 +182,29 @@ const Home = () => {
     };
   });
 
-  const handleClickOpen = (data) => {
-    console.log(data);
+  const handleDelete = async (data) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8801/api/hoat-dong/${data}`
+      );
+      if (res.data) fetchData();
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get('http://localhost:8801/api/hoat-dong');
+      if (res.data) setData(res.data);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('http://localhost:8801/api/hoat-dong');
-        if (res.data) setData(res.data);
-      } catch (err) {
-        console.log(err);
-        return err;
-      }
-    };
     fetchData();
   }, []);
   return (

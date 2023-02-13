@@ -53,9 +53,21 @@ const updateHoatDong = async (req, res) => {
   }
 };
 
+//delete hoat dong
+//[DELETE]: /api/hoat-dong/:id
+const deleteHoatDong = async (req, res) => {
+  try {
+    await HoatDong.findByIdAndDelete(req.params.id);
+    return res.status(200).json("hoat dong da duoc xoa");
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   createNewHoatDong,
   getAllHoatDong,
   updateHoatDong,
   getHoatDong,
+  deleteHoatDong,
 };
